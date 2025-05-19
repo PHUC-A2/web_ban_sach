@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.config.EnableMongoAuditing;
 public class QuanlybansachApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(QuanlybansachApplication.class, args);
+		SpringApplication.run(QuanlybansachApplication.class, args);//
 	}
 
 }
