@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Sửa Sản Phẩm</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        #preview img {
+            max-width: 200px;
+            max-height: 200px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background-color: #fff;
+            padding: 5px;
+            box-shadow: 0 1px 4px rgb(0 0 0 / 0.1);
+        }
+    </style>
+</head>
+
+<body class="container mt-4">
+    <h2>Sửa Sản Phẩm</h2>
+    <form th:action="@{'/admin/sanpham/sua/' + ${sanPham.id}}" th:object="${sanPham}" method="post" id="productForm">
+        <div class="mb-3">
+            <label for="tieuDe" class="form-label">Tiêu đề</label>
+            <input type="text" th:field="*{tieuDe}" class="form-control" id="tieuDe" required />
+        </div>
+        <div class="mb-3">
+            <label for="tacGia" class="form-label">Tác giả</label>
+            <input type="text" th:field="*{tacGia}" class="form-control" id="tacGia" required />
+        </div>
+        <div class="mb-3">
+            <label for="moTa" class="form-label">Mô tả</label>
+            <textarea th:field="*{moTa}" class="form-control" id="moTa" rows="3" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="gia" class="form-label">Giá</label>
+            <input type="number" step="0.01" th:field="*{gia}" class="form-control" id="gia" required />
+        </div>
+        <div class="mb-3">
+            <label for="soLuong" class="form-label">Số lượng</label>
+            <input type="number" th:field="*{soLuong}" class="form-control" id="soLuong" required />
+        </div>
+        <div class="mb-3">
+            <label for="theLoai" class="form-label">Thể loại</label>
+            <input type="text" th:field="*{theLoai}" class="form-control" id="theLoai" required />
+        </div>
+
+        <!-- Ảnh hiện có -->
+        <div class="mb-3">
+            <label class="form-label">Ảnh hiện tại</label>
+            <div id="preview" th:utext="${sanPham.hinhAnh}"></div>
+        </div>
+
+        <!-- Chọn ảnh mới -->
+        <div class="mb-3">
+            <label for="fileAnh" class="form-label">Chọn ảnh mới từ máy</label>
+            <input type="file" id="fileAnh" accept="image/*" class="form-control" />
+        </div>
+
+        <!-- Hoặc dán link ảnh -->
+        <div class="mb-3">
+            <label for="linkAnh" class="form-label">Hoặc dán link ảnh</label>
+            <input type="text" id="linkAnh" class="form-control" placeholder="https://example.com/image.jpg" />
+        </div>
+
+        <!-- Input ẩn chứa chuỗi base64 hoặc link ảnh -->
+        <input type="hidden" th:field="*{hinhAnh}" id="hinhAnh" />
+
+        <button type="submit" class="btn btn-primary mt-3">Cập nhật sản phẩm</button>
+    </form>
+
+    <script>
+        const fileInput = document.getElementById('fileAnh');
+        const linkInput = document.getElementById('linkAnh');
+        const previewDiv = document.getElementById('preview');
+        const hinhAnhInput = document.getElementById('hinhAnh');
+
+        function setPreview(src) {
+            previewDiv.innerHTML = `<img src="${src}" alt="Preview">`;
+            hinhAnhInput.value = src;
+        }
+
+        // Khi load trang, nếu có hinhAnh, lấy src ảnh hiện có để điền vào input ẩn và linkAnh
+        window.addEventListener('DOMContentLoaded', () => {
+            // Lấy thẻ img trong preview
+            const img = previewDiv.querySelector('img');
+            if (img && img.src) {
+                hinhAnhInput.value = img.src;
+                linkInput.value = img.src;
+            }
+        });
+
+        // Khi chọn file ảnh mới -> chuyển thành base64 và cập nhật preview + input ẩn
+        fileInput.addEventListener('change', function () {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+
+                // Giới hạn dung lượng ảnh (ví dụ 2MB)
+                const maxSize = 2 * 1024 * 1024;
+                if (file.size > maxSize) {
+                    alert('Ảnh quá lớn! Vui lòng chọn ảnh nhỏ hơn 2MB.');
+                    this.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    setPreview(e.target.result);
+                    linkInput.value = '';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Khi dán link ảnh -> cập nhật preview + input ẩn, reset file input
+        linkInput.addEventListener('input', function () {
+            const url = this.value.trim();
+            if (url) {
+                setPreview(url);
+                fileInput.value = '';
+            } else {
+                // Nếu xóa link ảnh thì giữ ảnh hiện tại hoặc xoá preview nếu muốn
+                const img = previewDiv.querySelector('img');
+                if (img && img.src) {
+                    setPreview(img.src);
+                } else {
+                    previewDiv.innerHTML = '';
+                    hinhAnhInput.value = '';
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

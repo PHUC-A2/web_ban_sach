@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Danh sách Sản phẩm</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
+    <style>
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .product-card {
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 15px;
+        }
+
+        .product-title {
+            font-size: 1.05rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+            min-height: 48px;
+        }
+
+        .product-author {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 8px;
+        }
+
+        .product-price {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #e53935;
+        }
+
+        .search-form {
+            max-width: 500px;
+            margin: 30px auto;
+        }
+
+        .search-form input {
+            border-radius: 20px 0 0 20px;
+        }
+
+        .search-form button {
+            border-radius: 0 20px 20px 0;
+        }
+
+        .no-results {
+            font-size: 1rem;
+            color: #888;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container py-4">
+        <h2 class="text-center mb-4 fw-bold text-primary">Tất cả Sản phẩm</h2>
+
+        <!-- Search form -->
+        <form th:action="@{/user/sanpham/timkiem}" method="get" class="search-form input-group">
+            <input type="text" name="keyword" class="form-control" placeholder="Tìm sách theo tên, tác giả..."
+                th:value="${keyword}" />
+            <button class="btn btn-primary" type="submit">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
+
+        <!-- Product Grid -->
+        <div class="row g-4 mt-3">
+            <div class="col-md-3 col-sm-6" th:each="sp : ${sanPhams}">
+                <div class="product-card h-100 d-flex flex-column">
+                    <img th:src="${sp.hinhAnh != null ? sp.hinhAnh : 'https://via.placeholder.com/300x250?text=No+Image'}"
+                        class="product-image" alt="Ảnh sách" />
+                    <div class="product-info flex-grow-1 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="product-title" th:text="${sp.tieuDe}">Tên sách</div>
+                            <div class="product-author" th:text="'Tác giả: ' + ${sp.tacGia}">Tác giả</div>
+                        </div>
+                        <div class="mt-auto">
+                            <div class="product-price"
+                                th:text="${#numbers.formatDecimal(sp.gia, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">120.000 VNĐ
+                            </div>
+                            <a th:href="@{'/user/sanpham/chitiet/' + ${sp.id}}"
+                                class="btn btn-outline-primary btn-sm w-100 mt-2">
+                                Xem chi tiết
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- No results -->
+            <div th:if="${#lists.isEmpty(sanPhams)}" class="text-center mt-5">
+                <p class="no-results fst-italic">Không tìm thấy sản phẩm nào phù hợp.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
