@@ -5,16 +5,47 @@
     <meta charset="UTF-8" />
     <title>Danh sách Sản phẩm</title>
 
-    <!-- Bootstrap CSS -->
+    <!-- Bootstrap CSS & FontAwesome -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-
-    <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
 
     <style>
         body {
             background-color: #f5f7fa;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Navbar */
+        .navbar-custom {
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: #0d6efd;
+            font-size: 1.4rem;
+        }
+
+        .search-box {
+            width: 600px;
+        }
+
+        .search-box input {
+            border-radius: 20px 0 0 20px;
+            padding: 10px 20px;
+        }
+
+        .search-box button {
+            border-radius: 0 20px 20px 0;
+            padding: 10px 20px;
+            background-color: #0d6efd;
+            color: white;
+            border: none;
+        }
+
+        .search-box button:hover {
+            background-color: #0056b3;
         }
 
         .product-card {
@@ -37,14 +68,9 @@
             object-fit: cover;
         }
 
-        .product-info {
-            padding: 15px;
-        }
-
         .product-title {
             font-size: 1.05rem;
             font-weight: bold;
-            margin-bottom: 5px;
             color: #333;
             min-height: 48px;
         }
@@ -52,26 +78,12 @@
         .product-author {
             font-size: 0.9rem;
             color: #6c757d;
-            margin-bottom: 8px;
         }
 
         .product-price {
             font-size: 1.1rem;
             font-weight: 600;
             color: #e53935;
-        }
-
-        .search-form {
-            max-width: 500px;
-            margin: 30px auto;
-        }
-
-        .search-form input {
-            border-radius: 20px 0 0 20px;
-        }
-
-        .search-form button {
-            border-radius: 0 20px 20px 0;
         }
 
         .no-results {
@@ -82,43 +94,58 @@
 </head>
 
 <body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light navbar-custom sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">Sách Hay</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <!-- Search bar -->
+                <form th:action="@{/user/sanpham/timkiem}" method="get" class="d-flex mx-auto search-box input-group">
+                    <input type="text" name="keyword" class="form-control" placeholder="Tìm sách theo tên, tác giả..."
+                        th:value="${keyword}" />
+                    <button type="submit"><i class="fas fa-search"></i></button>
+                </form>
+
+                <!-- Right links -->
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/user">Trang chủ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Giỏ hàng</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Đăng nhập</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Danh sách sản phẩm -->
     <div class="container py-4">
         <h2 class="text-center mb-4 fw-bold text-primary">Tất cả Sản phẩm</h2>
-
-        <!-- Search form -->
-        <form th:action="@{/user/sanpham/timkiem}" method="get" class="search-form input-group">
-            <input type="text" name="keyword" class="form-control" placeholder="Tìm sách theo tên, tác giả..."
-                th:value="${keyword}" />
-            <button class="btn btn-primary" type="submit">
-                <i class="fas fa-search"></i>
-            </button>
-        </form>
-
-        <!-- Product Grid -->
-        <div class="row g-4 mt-3">
+        <div class="row g-4">
             <div class="col-md-3 col-sm-6" th:each="sp : ${sanPhams}">
                 <div class="product-card h-100 d-flex flex-column">
                     <img th:src="${sp.hinhAnh != null ? sp.hinhAnh : 'https://via.placeholder.com/300x250?text=No+Image'}"
                         class="product-image" alt="Ảnh sách" />
-                    <div class="product-info flex-grow-1 d-flex flex-column justify-content-between">
+                    <div class="p-3 d-flex flex-column justify-content-between flex-grow-1">
                         <div>
                             <div class="product-title" th:text="${sp.tieuDe}">Tên sách</div>
                             <div class="product-author" th:text="'Tác giả: ' + ${sp.tacGia}">Tác giả</div>
                         </div>
                         <div class="mt-auto">
                             <div class="product-price"
-                                th:text="${#numbers.formatDecimal(sp.gia, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">120.000 VNĐ
-                            </div>
+                                th:text="${#numbers.formatDecimal(sp.gia, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</div>
                             <a th:href="@{'/user/sanpham/chitiet/' + ${sp.id}}"
-                                class="btn btn-outline-primary btn-sm w-100 mt-2">
-                                Xem chi tiết
-                            </a>
+                                class="btn btn-outline-primary btn-sm w-100 mt-2">Xem chi tiết</a>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- No results -->
+            <!-- Không có sản phẩm -->
             <div th:if="${#lists.isEmpty(sanPhams)}" class="text-center mt-5">
                 <p class="no-results fst-italic">Không tìm thấy sản phẩm nào phù hợp.</p>
             </div>

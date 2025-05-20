@@ -5,19 +5,29 @@
     <meta charset="UTF-8" />
     <title>Danh Sách Người Dùng</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- Bootstrap CSS -->
+    <!-- Bootstrap & Font Awesome -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
     <style>
         body {
             background-color: #f0f2f5;
             font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         }
 
+        .navbar-custom {
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: #0d6efd;
+        }
+
         .container {
             max-width: 960px;
-            margin-top: 50px;
+            margin-top: 100px;
             background: #ffffff;
             padding: 30px 40px;
             border-radius: 12px;
@@ -29,7 +39,6 @@
             font-weight: 700;
             margin-bottom: 25px;
             text-align: center;
-            letter-spacing: 1px;
         }
 
         form.d-flex {
@@ -37,31 +46,16 @@
             gap: 10px;
         }
 
-        input[type="text"] {
-            border-radius: 30px;
+        .search-box input {
+            border-radius: 30px 0 0 30px;
             padding-left: 20px;
-            box-shadow: inset 0 1px 5px rgb(0 0 0 / 0.1);
-            transition: box-shadow 0.3s ease;
-        }
-
-        input[type="text"]:focus {
-            box-shadow: 0 0 8px #0d6efd;
-            outline: none;
-        }
-
-        button.btn-primary {
-            border-radius: 30px;
-            width: 48px;
+            box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.1);
             height: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            transition: background-color 0.3s ease;
         }
 
-        button.btn-primary:hover {
-            background-color: #0b5ed7;
+        .search-box button {
+            border-radius: 0 30px 30px 0;
+            height: 48px;
         }
 
         table {
@@ -69,39 +63,27 @@
             border-spacing: 0 8px;
         }
 
-        thead tr th {
+        thead th {
             background-color: #343a40;
             color: #fff;
-            font-weight: 600;
             font-size: 15px;
             border-radius: 8px 8px 0 0;
-            padding: 12px 20px;
             text-align: center;
-            letter-spacing: 0.05em;
+            padding: 12px;
         }
 
         tbody tr {
             background: #f8f9fa;
             border-radius: 12px;
-            transition: background-color 0.2s ease;
         }
 
         tbody tr:hover {
             background-color: #e9ecef;
         }
 
-        tbody tr td {
-            vertical-align: middle;
-            padding: 15px 18px;
+        tbody td {
             text-align: center;
-            font-size: 14px;
-            color: #495057;
-            border-bottom: none !important;
-        }
-
-        tbody tr td:first-child {
-            font-weight: 600;
-            color: #212529;
+            padding: 15px;
         }
 
         td.d-flex {
@@ -113,19 +95,9 @@
             border: none;
         }
 
-        .btn-info:hover {
-            background-color: #0bb8d4;
-        }
-
         .btn-warning {
             background-color: #ffc107;
             border: none;
-            color: #212529;
-        }
-
-        .btn-warning:hover {
-            background-color: #e0a800;
-            color: #212529;
         }
 
         .btn-danger {
@@ -133,67 +105,56 @@
             border: none;
         }
 
-        .btn-danger:hover {
-            background-color: #bb2d3b;
-        }
-
         .btn-success {
             margin-top: 20px;
-            padding: 10px 22px;
-            font-size: 15px;
-            font-weight: 600;
             border-radius: 30px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-success i {
-            font-size: 18px;
-        }
-
-        input[name="keyword"] {
-            padding-left: 40px;
-            transition: box-shadow 0.3s ease;
-        }
-
-        input[name="keyword"]:focus {
-            box-shadow: 0 0 8px #0d6efd;
-            outline: none;
-        }
-
-        .input-group .btn-primary {
-            width: 48px;
-            height: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            transition: background-color 0.3s ease;
-            border-top-left-radius: 0;
-            border-bottom-left-radius: 0;
-        }
-
-        .input-group .btn-primary:hover {
-            background-color: #0b5ed7;
+            font-weight: 600;
         }
     </style>
 </head>
 
 <body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light navbar-custom fixed-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" href="#">Quản Trị</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/admin">Trang chủ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/sanpham/tatca">Sản phẩm</a>
+                    </li>
+                </ul>
+
+                <!-- Search bar in navbar -->
+                <form th:action="@{/admin/nguoidung/timkiem}" method="get" class="d-flex search-box">
+                    <input type="text" name="keyword" class="form-control" placeholder="Tìm kiếm người dùng..."
+                        th:value="${keyword}" />
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+
+                <ul class="navbar-nav ms-3">
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" href="/">Đăng xuất</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Nội dung -->
     <div class="container">
         <h2>Danh Sách Người Dùng</h2>
-
-        <form th:action="@{/admin/nguoidung/timkiem}" method="get" class="d-flex justify-content-center mb-4">
-            <div class="input-group" style="max-width: 400px; width: 100%;">
-                <input type="text" name="keyword" class="form-control rounded-pill" placeholder="Tìm kiếm người dùng..."
-                    aria-label="Tìm kiếm người dùng" style="padding-left: 40px;" />
-                <button class="btn btn-primary rounded-pill position-relative" type="submit" aria-label="Tìm kiếm"
-                    style="width: 48px; height: 48px;">
-                    <i class="fas fa-search"></i>
-                </button>
-            </div>
-        </form>
 
         <table class="table">
             <thead>
@@ -213,15 +174,9 @@
                     <td th:text="${#temporals.format(nguoiDung.ngayThem, 'dd/MM/yyyy HH:mm')}">Ngày thêm</td>
                     <td class="d-flex gap-2 justify-content-center">
                         <a th:href="@{/admin/nguoidung/chitiet/{id}(id=${nguoiDung.id})}" class="btn btn-info btn-sm"
-                            title="Xem">
-                            <i class="fas fa-eye"></i>
-                        </a>
-
+                            title="Xem"><i class="fas fa-eye"></i></a>
                         <a th:href="@{/admin/nguoidung/sua/{id}(id=${nguoiDung.id})}" class="btn btn-warning btn-sm"
-                            title="Sửa">
-                            <i class="fas fa-edit"></i>
-                        </a>
-
+                            title="Sửa"><i class="fas fa-edit"></i></a>
                         <form th:action="@{/admin/nguoidung/xoa/{id}(id=${nguoiDung.id})}" method="post"
                             th:object="${nguoiDung}">
                             <button type="submit" class="btn btn-danger btn-sm"
@@ -239,7 +194,7 @@
         </a>
     </div>
 
-    <!-- Bootstrap & JS -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
